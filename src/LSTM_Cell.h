@@ -49,10 +49,39 @@ class LSTM_Cell
 	
 	void Build(int Input_Length,double Learning_Rate,double Beta_Rate)
 	{
+		
+		this->Input_Length = Input_Length;
+		this->Learning_Rate = Learning_Rate;
+		this->Beta_Rate = Beta_Rate;
+		
 		Forgot.Build(1,Input_Length,Learning_Rate,Beta_Rate);
 		Input.Build(1,Input_Length,Learning_Rate,Beta_Rate);
 		Cell_Delta.Build(0,Input_Length,Learning_Rate,Beta_Rate);
 		Output.Build(1,Input_Length,Learning_Rate,Beta_Rate);
+	}
+	
+	void Set_Value(double Learning_Rate,double Beta_Rate)
+	{
+		this->Learning_Rate = Learning_Rate;
+		this->Beta_Rate = Beta_Rate;
+	}
+	
+	void Propagate_Test()
+	{
+		double *Test_String = new double[Input_Length];
+		
+		cout << " LSTM Propagate Test \n Test String: ";
+		for(int i=0;i<Input_Length;i++)
+		{
+			Test_String[i] = RandomRange(-1.0,1.0);
+			cout << Test_String[i] << "  ";
+		}
+		cout << endl;
+		
+		double Result = Propagate(Test_String);
+		
+		cout << "Result : " << Result << endl<< endl<< endl<< endl;
+		
 	}
 	
 	/**********************************************

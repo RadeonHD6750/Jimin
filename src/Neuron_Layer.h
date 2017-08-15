@@ -67,9 +67,7 @@ class Neuron_Layer
 		}
 		
 		//lSTM Build
-		
 		lstm_layer = new LSTM_Cell[Layer_Length];
-		
 		
 		for(int i=0;i<Layer_Length;i++)
 		{
@@ -88,6 +86,7 @@ class Neuron_Layer
 		for(int i=0;i<Layer_Length;i++)
 		{	
 			neuron_layer[i].Set_Value(Active_Function,Learning_Rate,Beta_Rate);
+			lstm_layer[i].Set_Value(Learning_Rate,Beta_Rate);
 		}
 	}
 	
@@ -112,15 +111,12 @@ class Neuron_Layer
 		for(int i=0;i<Layer_Length;i++)
 		{
 			Result[i] = neuron_layer[i].Propagate(Signal);
-			
 		}
 		
 		return Result;
 	}
 	
 	//LSTM 전파
-	
-	
 	double* Propagate_LSTM(double Signal[])
 	{
 		double *Result = new double[Layer_Length];
@@ -156,13 +152,11 @@ class Neuron_Layer
 		for(int i=0;i<Layer_Length;i++)
 		{
 			neuron_layer->Hebb_Update(Signal);
-	
 		}
 		
 	}
 	
 	//LSTM Update
-	
 	void LSTM_Update(double Signal[])
 	{
 		for(int i=0;i<Layer_Length;i++)
