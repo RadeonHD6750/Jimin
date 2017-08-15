@@ -199,7 +199,7 @@ class Full_Connected
 	}
 	
 	//LSTM Hebb Rule
-	void LSTM_Update(double Signal[])
+	void LSTM_Update(double Signal[],double Error_Array[])
 	{
 		
 		Layer[0].Hebb_Update(Signal);
@@ -216,6 +216,8 @@ class Full_Connected
 			Temp = Temp2;
 			
 		}
+		
+		Layer[Class_Length-1].LSTM_Update(Temp,Error_Array);
 
 	}
 	

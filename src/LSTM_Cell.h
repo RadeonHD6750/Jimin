@@ -193,6 +193,16 @@ class LSTM_Cell
 					신경망 학습함수
 	**********************************************/
 	
+	//가중치 갱신하기
+	void Cell_Update(double Signal[],double Error_Array)
+	{
+		Forgot.Hebb_Update(Signal);
+		Input.Hebb_Update(Signal);
+		Cell_Delta.Hebb_Update(Signal);
+		Output.Hebb_Update(Signal);
+		
+		Input.BP_Update(Error_Array);
+	}
 	
 	//가중치 갱신하기
 	void Cell_Update(double Signal[])
@@ -201,5 +211,6 @@ class LSTM_Cell
 		Input.Hebb_Update(Signal);
 		Cell_Delta.Hebb_Update(Signal);
 		Output.Hebb_Update(Signal);
+		
 	}
 };
