@@ -137,6 +137,23 @@ class Full_Connected
 		return Result;
 	}
 	
+	double* Propagate_LSTM(double Signal[])
+	{
+		
+		double *Temp = Signal;
+		double *Result = new double[Result_Length];
+		
+		for(int i=0;i<Class_Length;i++)
+		{
+			Result = new double[Layer_Length[i+1]];
+			Result = Layer[i].Propagate_LSTM(Temp);
+			
+			Temp = Result;
+		}
+		
+		return Result;
+	}
+	
 	/**********************************************
 					신경망 학습식
 	**********************************************/
@@ -174,6 +191,27 @@ class Full_Connected
 			Layer[i].Hebb_Update(Temp);
 			
 			Temp2 = Layer[i].Propagate(Temp);
+			
+			Temp = Temp2;
+			
+		}
+
+	}
+	
+	//LSTM Hebb Rule
+	void LSTM_Update(double Signal[])
+	{
+		
+		Layer[0].Hebb_Update(Signal);
+		
+		double *Temp = Layer[0].Propagate_LSTM(Signal);
+		double *Temp2 = NULL;
+		
+		for(int i=1;i<BP_Start;i++)
+		{
+			Layer[i].LSTM_Update(Temp);
+			
+			Temp2 = Layer[i].Propagate_LSTM(Temp);
 			
 			Temp = Temp2;
 			

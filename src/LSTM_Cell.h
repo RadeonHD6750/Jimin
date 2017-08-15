@@ -66,6 +66,17 @@ class LSTM_Cell
 		this->Beta_Rate = Beta_Rate;
 	}
 	
+	void Init()
+	{
+		Forgot.Init();
+		Input.Init();
+		Cell_Delta.Init();
+		Output.Init();
+		
+		Cell_State= 0;
+		Active = 0;
+	}
+	
 	void Propagate_Test()
 	{
 		double *Test_String = new double[Input_Length];
