@@ -135,8 +135,7 @@ class LSTM_Network
 
 	
 	//LSTM Hebb Rule
-	/*
-	void LSTM_Update(double Signal[],double Error_Array[])
+	void Hebb_Update(double Signal[],double Error_Array[])
 	{
 		
 		Layer[0].Hebb_Update(Signal);
@@ -146,7 +145,7 @@ class LSTM_Network
 		
 		for(int i=1;i<BP_Start;i++)
 		{
-			Layer[i].LSTM_Update(Temp);
+			Layer[i].Hebb_Update(Temp);
 			
 			Temp2 = Layer[i].Propagate(Temp);
 			
@@ -154,9 +153,9 @@ class LSTM_Network
 			
 		}
 		
-		Layer[Class_Length-1].LSTM_Update(Temp,Error_Array);
+		//Layer[Class_Length-1].BP_Update(Temp,Error_Array); 차후에 오류역전파 코딩하기
 
-	}*/
+	}
 	
 	/**********************************************
 					신경망 가중치 I/O 
