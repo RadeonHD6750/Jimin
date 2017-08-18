@@ -7,15 +7,17 @@
 	
 	그외 파일 입출력을 위한 I/O 함수들
 	
-	작성자 서지민
+	Neuron.h과 LSTM_Cell.h을 완벽히 분리하는데 성공하여 해결했음
+	
+	작성자 서지
 
 */
 
-#include <iostream>
-#include <cmath>
+#include <iostream> 
 #include <vector>
 
 #include "Full_Connected.h"
+#include "LSTM_Network.h"
 
 using namespace std;
 
@@ -43,8 +45,7 @@ class Jimin_ANN
 	
 	Full_Connected full_connected; //완전연결 신경망
 	
-	//Convolute_NN convolute_nn; 
-	//LSTM lstm_network;
+	LSTM_Network lstm_network; //순환신경망
 	
 	/**********************************************
 					신경망 구조

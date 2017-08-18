@@ -7,8 +7,9 @@
 */
 
 #include <iostream>
-
-#include "Neuron.h"
+#include <ctime>
+#include <cstdlib>
+#include <cmath>
 
 using namespace std;
 
@@ -21,15 +22,19 @@ class LSTM_Cell
 	double Beta_Rate;
 	double Cell_State;
 	
+	double *Forgot_Weight;
+	double *Input_Weight;
+	double *Cell_Delta_Weight;
+	double *Output_Weight;
+	
+	double Forgot_Bias;
+	double Input_Bias;
+	double Cell_Delta_Bias;
+	double Output_Bias;
 
 	public:
-	
-	Neuron Forgot;
-	Neuron Input;
-	Neuron Cell_Delta;
-	Neuron Output;
-	
-	int Input_Length;
+
+	int Input_Weight_Length;
 	
 	double Active;
 	
@@ -44,20 +49,23 @@ class LSTM_Cell
 	
 	~LSTM_Cell()
 	{
-		
+		delete []Forgot_Weight;
+		delete []Input_Weight;
+		delete []Cell_Delta_Weight;
+		delete []Output_Weight;
 	}
 	
-	void Build(int Input_Length,double Learning_Rate,double Beta_Rate)
+	void Build(int Input_Weight_Length,double Learning_Rate,double Beta_Rate)
 	{
 		
-		this->Input_Length = Input_Length;
+		this->Input_Weight_Length = Input_Weight_Length;
 		this->Learning_Rate = Learning_Rate;
 		this->Beta_Rate = Beta_Rate;
 		
-		Forgot.Build(1,Input_Length,Learning_Rate,Beta_Rate);
-		Input.Build(1,Input_Length,Learning_Rate,Beta_Rate);
-		Cell_Delta.Build(0,Input_Length,Learning_Rate,Beta_Rate);
-		Output.Build(1,Input_Length,Learning_Rate,Beta_Rate);
+		Forgot_Weight = new double[Input_Weight_Length+1];
+		Input_Weight = new double[Input_Weight_Length+1];
+		Cell_Delta_Weight = new double[Input_Weight_Length+1];
+		Output_Weight = new double[Input_Weight_Length+1];
 	}
 	
 	void Set_Value(double Learning_Rate,double Beta_Rate)
@@ -68,21 +76,29 @@ class LSTM_Cell
 	
 	void Init()
 	{
-		Forgot.Init();
-		Input.Init();
-		Cell_Delta.Init();
-		Output.Init();
+		Init(Forgot_Weight);
+		Init(Input_Weight);
+		Init(Cell_Delta_Weight);
+		Init(Output_Weight);
 		
 		Cell_State= 0;
 		Active = 0;
 	}
 	
+	void Init(double Weight[])
+	{
+		for(int i=0;i<Input_Weight_Length+1;i++)
+		{
+			Weight[i] = RandomRange(-1.0,1.0);
+		}
+	}
+	
 	void Propagate_Test()
 	{
-		double *Test_String = new double[Input_Length];
+		double *Test_String = new double[Input_Weight_Length];
 		
 		cout << " LSTM Propagate Test \n Test String: ";
-		for(int i=0;i<Input_Length;i++)
+		for(int i=0;i<Input_Weight_Length;i++)
 		{
 			Test_String[i] = RandomRange(-1.0,1.0);
 			cout << Test_String[i] << "  ";
@@ -102,74 +118,135 @@ class LSTM_Cell
 	//망각함수
 	double Forgot_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Length+1];
+		double *Signal_Ex = new double[Input_Weight_Length+1];
 		
-		for(int i=0;i<Input_Length;i++)
+		for(int i=0;i<Input_Weight_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Length] = Active;
+		Signal_Ex[Input_Weight_Length] = Active;
 		
+		double X = 0;
 		
-		return Forgot.Propagate(Signal_Ex);
+		for(int i=0;i<Input_Weight_Length+1;i++)
+		{
+			X = X + (Forgot_Weight[i] * Signal_Ex[i]);
+		}
+		
+		X = Sigmoid(X);
+		
+		delete []Signal_Ex;
+		
+		return X;
 	}
 	
 	//입력제어 함수
 	double Input_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Length+1];
+		double *Signal_Ex = new double[Input_Weight_Length+1];
 		
-		for(int i=0;i<Input_Length;i++)
+		for(int i=0;i<Input_Weight_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Length] = Active;
+		Signal_Ex[Input_Weight_Length] = Active;
 		
-		return Input.Propagate(Signal_Ex);
+		double X = 0;
+		
+		for(int i=0;i<Input_Weight_Length+1;i++)
+		{
+			X = X + (Input_Weight[i] * Signal_Ex[i]);
+		}
+		
+		X = Sigmoid(X);
+		
+		delete []Signal_Ex;
+		
+		return X;
 	}
 	
 	//상태변화 함수
 	double Cell_Delta_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Length+1];
+		double *Signal_Ex = new double[Input_Weight_Length+1];
 		
-		for(int i=0;i<Input_Length;i++)
+		for(int i=0;i<Input_Weight_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Length] = Active;
+		Signal_Ex[Input_Weight_Length] = Active;
 		
-		return Cell_Delta.Propagate(Signal_Ex);
+		double X = 0;
+		
+		for(int i=0;i<Input_Weight_Length+1;i++)
+		{
+			X = X + (Cell_Delta_Weight[i] * Signal_Ex[i]);
+		}
+		
+		X = Tanh(X);
+		
+		delete []Signal_Ex;
+		
+		return X;
 	}
 	
 	//출력제어 함수
 	double Output_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Length+1];
+		double *Signal_Ex = new double[Input_Weight_Length+1];
 		
-		for(int i=0;i<Input_Length;i++)
+		for(int i=0;i<Input_Weight_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Length] = Active;
+		Signal_Ex[Input_Weight_Length] = Active;
 		
-		return Output.Propagate(Signal_Ex);
+		double X = 0;
+		
+		for(int i=0;i<Input_Weight_Length+1;i++)
+		{
+			X = X + (Output_Weight[i] * Signal_Ex[i]);
+		}
+		
+		X = Sigmoid(X);
+		
+		delete []Signal_Ex;
+		
+		return X;
 	}
 	
 	//세포상태
 	double Cell_State_Function(double Signal[])
 	{
-		double Forgot = Forgot_Function(Signal);
-		double Input = Input_Function(Signal);
-		double Delta = Cell_Delta_Function(Signal);
+		double Forgot_Value = Forgot_Function(Signal);
+		double Input_Value = Input_Function(Signal);
+		double Cell_Delta = Cell_Delta_Function(Signal);
 		
 		//아직 갱신이 안되었음으로 Cell_State는 과거 입력이다.
-		double Cell_State = (Forgot * this->Cell_State) + (Input * Delta);
+		double Cell_State = (Forgot_Value * this->Cell_State) + (Input_Value * Cell_Delta);
 		
-		this->Cell_Delta = Cell_Delta; //이제 여기서 갱신한다.
+		this->Cell_State = Cell_State; //이제 여기서 갱신한다.
 			
 		return Cell_State;
 	}
+	
+	/**********************************************
+					신경망 활성함수
+	**********************************************/
+	
+	
+	//양극 탄젠트
+	double Tanh(double X)
+	{
+		return X = tanh(X);
+	}
+
+	//시그모이드
+	double Sigmoid(double X)
+	{
+		return X = 1 / (1 + exp(-X));
+	}
+	
 	
 	/**********************************************
 					신경망 출력
@@ -182,7 +259,7 @@ class LSTM_Cell
 		
 		double Cell_State = Cell_State_Function(Signal);
 		
-		double X = Out * tanh(Cell_State);
+		double X = Out * Tanh(Cell_State);
 		
 		Active = X; 
 		
@@ -193,24 +270,70 @@ class LSTM_Cell
 					신경망 학습함수
 	**********************************************/
 	
-	//가중치 갱신하기
-	void Cell_Update(double Signal[],double Error_Array)
-	{
-		Forgot.Hebb_Update(Signal);
-		Input.Hebb_Update(Signal);
-		Cell_Delta.Hebb_Update(Signal);
-		Output.Hebb_Update(Signal);
-		
-		Input.BP_Update(Error_Array);
-	}
 	
 	//가중치 갱신하기
-	void Cell_Update(double Signal[])
+	/*
+	void Cell_Update(double Signal[],double Error_Array)
 	{
-		Forgot.Hebb_Update(Signal);
-		Input.Hebb_Update(Signal);
-		Cell_Delta.Hebb_Update(Signal);
-		Output.Hebb_Update(Signal);
+		Forgot_Weight.Hebb_Update(Signal);
+		Input_Weight.Hebb_Update(Signal);
+		Cell_Delta_Weight.Hebb_Update(Signal);
+		Output_Weight.Hebb_Update(Signal);
 		
+		Input_Weight.BP_Update(Error_Array);
+	}
+	*/
+	
+	//가중치 갱신하기
+	void Hebb_Update(double Signal[])
+	{
+		double Forgot = Forgot_Function(Signal);
+		double Input = Input_Function(Signal);
+		double Cell_Delta = Cell_Delta_Function(Signal);
+		double Out = Output_Function(Signal);
+		
+		Hebb_Update(Signal,Forgot,Forgot_Weight,Forgot_Bias);
+		Hebb_Update(Signal,Input,Input_Weight,Input_Bias);
+		Hebb_Update(Signal,Cell_Delta,Cell_Delta_Weight,Cell_Delta_Bias);
+		Hebb_Update(Signal,Out,Output_Weight,Output_Bias);
+		
+	}
+	
+	//Hebb 학습규칙
+	void Hebb_Update(double Signal[],double Result,double Weight[],double Bias_Weight)
+	{
+		double Gradient = (1 - pow(Result,2)) * 0.5;
+		
+		for(int i=0;i<Input_Weight_Length;i++)
+		{
+			Weight[i] = Weight[i] + ( Learning_Rate * Result) * ( Beta_Rate * Signal[i] - Weight[i])  * Gradient;
+		}
+		
+		Bias_Weight = Bias_Weight +  ( Learning_Rate * Result) * ( Beta_Rate * 1.0 - Bias_Weight)  * Gradient;
+	}
+	
+	/**********************************************
+					기타 지원함수
+	**********************************************/
+	
+	double RandomRange(double min,double MAX)
+	{
+		double f = (double)rand() / RAND_MAX;
+	
+    	return min + f * (MAX - min);
+	}
+
+	int RandomRange(int n1, int n2) 
+	{ 
+   		return (rand() % (n2 - n1 + 1)) + n1; 
+	} 
+
+	double Round( double value, int pos )
+	{
+		 double temp;
+		 temp = value * pow( 10, pos );  // 원하는 소수점 자리수만큼 10의 누승을 함
+		 temp = floor( temp + 0.5 );          // 0.5를 더한후 버림하면 반올림이 됨
+		 temp *= pow( 10, -pos );           // 다시 원래 소수점 자리수로
+		 return temp;
 	}
 };

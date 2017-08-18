@@ -1,25 +1,16 @@
 /*
-	완전연결 신경망 구현
-	
-	오류역전파
-	헤브 학습규칙
-	
-	오류역전파는 출력층만 적용하고 나머지 깊이의 계층에서는
-	
-	헤브 학습규칙을 사용한다.
+	LSTM 네트워크 정의
 	
 	작성자 서지민
 */
 	
 #include <iostream>
-#include <cmath>
 
-#include "Neuron_Layer.h"
-//#include "LSTM_Network.h"
+#include "LSTM_Layer.h"
 
 using namespace std;
 
-class Full_Connected
+class LSTM_Network
 {
 	
 	private:
@@ -39,7 +30,7 @@ class Full_Connected
 					신경망 구조
 	**********************************************/
 	
-	Neuron_Layer *Layer;
+	LSTM_Layer *Layer;
 	
 	int Class_Length;
 	int *Layer_Length;
@@ -50,14 +41,14 @@ class Full_Connected
 					신경망 구축하기
 	**********************************************/
 	
-	Full_Connected()
+	LSTM_Network()
 	{
 		
 	}
 	
-	~Full_Connected()
+	~LSTM_Network()
 	{
-	
+		
 	}
 	
 	void Build(int Active_Function,int Class_Length,int Layer_Length[],double Learning_Rate,double Beta_Rate)
@@ -71,7 +62,7 @@ class Full_Connected
 		Input_Length = Layer_Length[0];
 		Result_Length = Layer_Length[Class_Length];
 		
-		Layer = new Neuron_Layer[Class_Length];
+		Layer = new LSTM_Layer[Class_Length];
 	
 		int Length;
 		int Input_Length;
@@ -137,33 +128,15 @@ class Full_Connected
 		
 		return Result;
 	}
-
 	
 	/**********************************************
 					신경망 학습식
 	**********************************************/
 
-	void Hebb_BP_Update(double Signal[],double Error_Delta[])
-	{
-		double *Temp = Layer[0].Propagate(Signal);
-		double *Temp2 = NULL;
-		
-		for(int i=1;i<BP_Start;i++)
-		{
-			Layer[i].Hebb_Update(Temp);
-			
-			Temp2 = Layer[i].Propagate(Temp);
-			
-			Temp = Temp2;
-			
-		}
-		
-		Layer[Class_Length-1].BP_Update(Error_Delta);
-	}
 	
-	
-	//Hebb Rule
-	void Hebb_Update(double Signal[])
+	//LSTM Hebb Rule
+	/*
+	void LSTM_Update(double Signal[],double Error_Array[])
 	{
 		
 		Layer[0].Hebb_Update(Signal);
@@ -173,21 +146,23 @@ class Full_Connected
 		
 		for(int i=1;i<BP_Start;i++)
 		{
-			Layer[i].Hebb_Update(Temp);
+			Layer[i].LSTM_Update(Temp);
 			
 			Temp2 = Layer[i].Propagate(Temp);
 			
 			Temp = Temp2;
 			
 		}
+		
+		Layer[Class_Length-1].LSTM_Update(Temp,Error_Array);
 
-	}
+	}*/
 	
 	/**********************************************
 					신경망 가중치 I/O 
 	**********************************************/
 
-	
+	/*
 	double* Get_Weight(int Class,int Neuron)
 	{
 		int Length = Layer[Class].neuron_layer[Neuron].Input_Length + 1;
@@ -220,6 +195,6 @@ class Full_Connected
 		Layer[Class].neuron_layer[Neuron].Weight = Weight_Array;
 		Layer[Class].neuron_layer[Neuron].Bias_Weight = Bias_Weight;
 	}
-	
+	*/
 	
 };

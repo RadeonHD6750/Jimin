@@ -7,13 +7,12 @@
 */
 
 #include <iostream>
-#include <thread>
 
-#include "Neuron.h"
+#include "LSTM_Cell.h"
 
 using namespace std;
 
-class Neuron_Layer
+class LSTM_Layer
 {
 	
 	private:
@@ -32,19 +31,19 @@ class Neuron_Layer
 					신경망 구조
 	**********************************************/
 	
-	Neuron *neuron_layer;
+	LSTM_Cell *lstm_layer;
 	
 	int Layer_Length;
 	int Input_Length;
 	
-	Neuron_Layer()
+	LSTM_Layer()
 	{
 		
 	}
 	
-	~Neuron_Layer()
+	~LSTM_Layer()
 	{
-		delete[] neuron_layer;
+		delete[] lstm_layer;
 	}
 	
 	//신경망 구축하기
@@ -57,14 +56,14 @@ class Neuron_Layer
 		this->Learning_Rate = Learning_Rate;
 		this->Beta_Rate = Beta_Rate;
 		
-		
-		//Neuron Build
-		neuron_layer = new Neuron[Layer_Length];
+		//lSTM Build
+		lstm_layer = new LSTM_Cell[Layer_Length];
 		
 		for(int i=0;i<Layer_Length;i++)
 		{
-			neuron_layer[i].Build(Active_Function,Input_Length,Learning_Rate,Beta_Rate);
+			lstm_layer[i].Build(Input_Length,Learning_Rate,Beta_Rate);
 		}
+		
 		
 	}
 	
@@ -76,7 +75,8 @@ class Neuron_Layer
 		
 		for(int i=0;i<Layer_Length;i++)
 		{	
-			neuron_layer[i].Set_Value(Active_Function,Learning_Rate,Beta_Rate);
+			
+			lstm_layer[i].Set_Value(Learning_Rate,Beta_Rate);
 		}
 	}
 	
@@ -85,7 +85,7 @@ class Neuron_Layer
 	{
 		for(int i=0;i<Layer_Length;i++)
 		{
-			neuron_layer[i].Init();
+			lstm_layer[i].Init();
 		}
 	}
 	
@@ -93,6 +93,7 @@ class Neuron_Layer
 					신경망 전파함수
 	**********************************************/
 	
+	//LSTM 전파
 	double* Propagate(double Signal[])
 	{
 		double *Result = new double[Layer_Length];
@@ -100,35 +101,43 @@ class Neuron_Layer
 		
 		for(int i=0;i<Layer_Length;i++)
 		{
-			Result[i] = neuron_layer[i].Propagate(Signal);
+			Result[i] = lstm_layer[i].Propagate(Signal);
 		}
+		
 		
 		return Result;
 	}
 	
-
 	/**********************************************
 					신경망 학습식
 	**********************************************/
 	
-	//오류 역전파
-	void BP_Update(double Error_Delta[])
+	//LSTM Update
+	/*
+	void LSTM_Update(double Signal[],double Error_Array[])
 	{
-		
 		for(int i=0;i<Layer_Length;i++)
 		{
-			neuron_layer[i].BP_Update(Error_Delta[i]);
+			lstm_layer->Cell_Update(Signal,Error_Array[i]);
 		}
 	}
 	
+	//LSTM Update
+	void LSTM_Update(double Signal[])
+	{
+		for(int i=0;i<Layer_Length;i++)
+		{
+			lstm_layer->Cell_Update(Signal);
+		}
+	}*/
 	
-	//Hebb Rule
+	//Hebb 학습규칙
 	void Hebb_Update(double Signal[])
 	{
 		for(int i=0;i<Layer_Length;i++)
 		{
-			neuron_layer->Hebb_Update(Signal);
+			lstm_layer->Hebb_Update(Signal);
 		}
-		
 	}
+
 };
