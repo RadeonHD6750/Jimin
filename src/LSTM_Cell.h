@@ -34,7 +34,7 @@ class LSTM_Cell
 
 	public:
 
-	int Input_Weight_Length;
+	int Input_Length;
 	
 	double Active;
 	
@@ -55,17 +55,17 @@ class LSTM_Cell
 		delete []Output_Weight;
 	}
 	
-	void Build(int Input_Weight_Length,double Learning_Rate,double Beta_Rate)
+	void Build(int Input_Length,double Learning_Rate,double Beta_Rate)
 	{
 		
-		this->Input_Weight_Length = Input_Weight_Length;
+		this->Input_Length = Input_Length;
 		this->Learning_Rate = Learning_Rate;
 		this->Beta_Rate = Beta_Rate;
 		
-		Forgot_Weight = new double[Input_Weight_Length+1];
-		Input_Weight = new double[Input_Weight_Length+1];
-		Cell_Delta_Weight = new double[Input_Weight_Length+1];
-		Output_Weight = new double[Input_Weight_Length+1];
+		Forgot_Weight = new double[Input_Length+1];
+		Input_Weight = new double[Input_Length+1];
+		Cell_Delta_Weight = new double[Input_Length+1];
+		Output_Weight = new double[Input_Length+1];
 		
 		Init();
 	}
@@ -89,18 +89,23 @@ class LSTM_Cell
 	
 	void Init(double Weight[])
 	{
-		for(int i=0;i<Input_Weight_Length+1;i++)
+		for(int i=0;i<Input_Length+1;i++)
 		{
 			Weight[i] = RandomRange(-1.0,1.0);
 		}
+		
+		Forgot_Bias = RandomRange(-1.0,1.0);
+		Input_Bias = RandomRange(-1.0,1.0);
+		Cell_Delta_Bias = RandomRange(-1.0,1.0);
+		Output_Bias = RandomRange(-1.0,1.0);
 	}
 	
 	void Propagate_Test()
 	{
-		double *Test_String = new double[Input_Weight_Length];
+		double *Test_String = new double[Input_Length];
 		
 		cout << " LSTM Propagate Test \n Test String: ";
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Test_String[i] = RandomRange(-1.0,1.0);
 			cout << Test_String[i] << "  ";
@@ -120,20 +125,22 @@ class LSTM_Cell
 	//망각함수
 	double Forgot_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Weight_Length+1];
+		double *Signal_Ex = new double[Input_Length+1];
 		
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Weight_Length] = Active;
+		Signal_Ex[Input_Length] = Active;
 		
 		double X = 0;
 		
-		for(int i=0;i<Input_Weight_Length+1;i++)
+		for(int i=0;i<Input_Length+1;i++)
 		{
 			X = X + (Forgot_Weight[i] * Signal_Ex[i]);
 		}
+		
+		X = X + (Forgot_Bias * 1.0);
 		
 		X = Sigmoid(X);
 		
@@ -145,20 +152,22 @@ class LSTM_Cell
 	//입력제어 함수
 	double Input_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Weight_Length+1];
+		double *Signal_Ex = new double[Input_Length+1];
 		
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Weight_Length] = Active;
+		Signal_Ex[Input_Length] = Active;
 		
 		double X = 0;
 		
-		for(int i=0;i<Input_Weight_Length+1;i++)
+		for(int i=0;i<Input_Length+1;i++)
 		{
 			X = X + (Input_Weight[i] * Signal_Ex[i]);
 		}
+		
+		X = X + (Input_Bias * 1.0);
 		
 		X = Sigmoid(X);
 		
@@ -170,20 +179,22 @@ class LSTM_Cell
 	//상태변화 함수
 	double Cell_Delta_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Weight_Length+1];
+		double *Signal_Ex = new double[Input_Length+1];
 		
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Weight_Length] = Active;
+		Signal_Ex[Input_Length] = Active;
 		
 		double X = 0;
 		
-		for(int i=0;i<Input_Weight_Length+1;i++)
+		for(int i=0;i<Input_Length+1;i++)
 		{
 			X = X + (Cell_Delta_Weight[i] * Signal_Ex[i]);
 		}
+		
+		X = X + (Cell_Delta_Bias * 1.0);
 		
 		X = Tanh(X);
 		
@@ -195,20 +206,22 @@ class LSTM_Cell
 	//출력제어 함수
 	double Output_Function(double Signal[])
 	{
-		double *Signal_Ex = new double[Input_Weight_Length+1];
+		double *Signal_Ex = new double[Input_Length+1];
 		
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Signal_Ex[i] = Signal[i];
 		}
-		Signal_Ex[Input_Weight_Length] = Active;
+		Signal_Ex[Input_Length] = Active;
 		
 		double X = 0;
 		
-		for(int i=0;i<Input_Weight_Length+1;i++)
+		for(int i=0;i<Input_Length+1;i++)
 		{
 			X = X + (Output_Weight[i] * Signal_Ex[i]);
 		}
+		
+		X = X + (Output_Bias * 1.0);
 		
 		X = Sigmoid(X);
 		
@@ -338,13 +351,13 @@ class LSTM_Cell
 	}
 	*/
 	
-	//오류 역전파
-	void BP_Update(double Signal[],double Error)
+	//오류 역전파 이제 이것으로 사용하면 됨
+	void BP_Update(double Signal[],double Error,double Next_Cell_State)
 	{
 		//각종 게이트
 		double Forgot_Value = Forgot_Function(Signal);
 		double Input_Value = Input_Function(Signal);
-		double Out = Output_Function(Signal);
+		double Output_Value = Output_Function(Signal);
 		
 		//입력활성값
 		double Cell_Delta = Cell_Delta_Function(Signal);
@@ -353,8 +366,39 @@ class LSTM_Cell
 		
 		double Result = Propagate(Signal);
 		
-		//상태오차
-		//State_Error_Delta(Error, Result, Cell_State, double Next_Cell_State,Forgot_Value);
+		//각종 오차신호
+		double State_Error = State_Error_Delta(Error, Result, Cell_State, Next_Cell_State,Forgot_Value);
+		double Cell_Delta_Error = Cell_Delta_Error_Delta(State_Error,Cell_Delta);
+		double Forgot_Error = Forgot_Gate_Delta(State_Error,this->Cell_State,Forgot_Value);
+		double Input_Error = Input_Gate_Delta(State_Error, Cell_Delta, Input_Value);
+		double Output_Error = Output_Gate_Delta(Error, Cell_State,Output_Value);
+		
+		
+		//실제로 갱신
+		BP_Update(Signal,Cell_Delta_Weight,Cell_Delta_Error);
+		BP_Update(Signal,Forgot_Weight,Forgot_Error);
+		BP_Update(Signal,Input_Weight,Input_Error);
+		BP_Update(Signal,Output_Weight,Output_Error);
+	}
+	
+	//한 게이트 역전파 갱신
+	void BP_Update(double Signal[],double Weight[],double Error)
+	{
+		double *Signal_Ex = new double[Input_Length+1];
+		
+		for(int i=0;i<Input_Length;i++)
+		{
+			Signal_Ex[i] = Signal[i];
+		}
+		Signal_Ex[Input_Length] = Active;
+		
+		for(int i=0;i<Input_Length+1;i++)
+		{
+			Weight[i] = Weight[i] + Learning_Rate * (Error * Signal_Ex[i]);
+		}
+		
+		delete []Signal_Ex;
+		
 	}
 	
 	//가중치 갱신하기
@@ -377,7 +421,7 @@ class LSTM_Cell
 	{
 		double Gradient = (1 - pow(Result,2)) * 0.5;
 		
-		for(int i=0;i<Input_Weight_Length;i++)
+		for(int i=0;i<Input_Length;i++)
 		{
 			Weight[i] = Weight[i] + ( Learning_Rate * Result) * ( Beta_Rate * Signal[i] - Weight[i])  * Gradient;
 		}
