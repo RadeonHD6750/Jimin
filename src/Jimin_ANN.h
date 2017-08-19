@@ -88,8 +88,11 @@ class Jimin_ANN
 
 		cout << "완전연결 신경망 구축 시작 \n\n";
 		full_connected.Build(Active_Function,Class_Length,Layer_Length,Learning_Rate,Beta_Rate);
-		
 		cout << "완전연결 신경망 구축 완료 \n\n";
+		
+		cout << "LSTM 신경망 구축 시작 \n\n";
+		lstm_network.Build(Class_Length,Layer_Length,Learning_Rate,Beta_Rate);
+		cout << "LSTM 신경망 구축 시작 \n\n";
 	}
 	
 	//Convolute
@@ -110,6 +113,7 @@ class Jimin_ANN
 		this->Epsilon_Loss = Epsilon_Loss;
 		
 		full_connected.Set_Value(Active_Function,Learning_Rate,Beta_Rate);
+		lstm_network.Set_Value(Learning_Rate,Beta_Rate);
 	}
 	
 	void Init()
@@ -117,6 +121,7 @@ class Jimin_ANN
 		Epsilon = Init_Epsilon;
 		Epsilon_Loss = Init_Epsilon_Loss;
 		full_connected.Init();
+		lstm_network.Init();
 	}
 	
 	
@@ -127,7 +132,8 @@ class Jimin_ANN
 	double* Propagate(double Signal[])
 	{
 		
-		double *Result =  full_connected.Propagate(Signal);
+		//double *Result =  full_connected.Propagate(Signal);
+		double *Result =  lstm_network.Propagate(Signal); //잠시 LSTM 동작테스트하기
 		
 		return Result;
 	}

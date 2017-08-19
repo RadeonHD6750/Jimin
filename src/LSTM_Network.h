@@ -18,8 +18,7 @@ class LSTM_Network
 	/**********************************************
 					신경망 학습요소
 	**********************************************/
-	
-	int Active_Function;
+
 	double Learning_Rate;
 	double Beta_Rate;
 	int BP_Start;
@@ -51,9 +50,8 @@ class LSTM_Network
 		
 	}
 	
-	void Build(int Active_Function,int Class_Length,int Layer_Length[],double Learning_Rate,double Beta_Rate)
+	void Build(int Class_Length,int Layer_Length[],double Learning_Rate,double Beta_Rate)
 	{
-		this->Active_Function = Active_Function;
 		this->Class_Length = Class_Length;
 		this->Layer_Length = Layer_Length;
 		this->Learning_Rate = Learning_Rate;
@@ -72,7 +70,7 @@ class LSTM_Network
 			Input_Length = Layer_Length[i];
 			Length = Layer_Length[i+1];
 			
-			Layer[i].Build(Active_Function,Length,Input_Length,Learning_Rate,Beta_Rate);
+			Layer[i].Build(Length,Input_Length,Learning_Rate,Beta_Rate);
 		}
 		
 		if(Class_Length - 1 > 0)
@@ -86,16 +84,15 @@ class LSTM_Network
 		
 	}
 	
-	void Set_Value(int Active_Function,double Learning_Rate,double Beta_Rate)
+	void Set_Value(double Learning_Rate,double Beta_Rate)
 	{
 		
-		this->Active_Function = Active_Function;
 		this->Learning_Rate = Learning_Rate;
 		this->Beta_Rate = Beta_Rate;
 		
 		for(int i=0;i<Class_Length;i++)
 		{	
-			Layer[i].Set_Value(Active_Function,Learning_Rate,Beta_Rate);
+			Layer[i].Set_Value(Learning_Rate,Beta_Rate);
 		}
 	}
 	

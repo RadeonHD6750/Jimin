@@ -66,6 +66,8 @@ class LSTM_Cell
 		Input_Weight = new double[Input_Weight_Length+1];
 		Cell_Delta_Weight = new double[Input_Weight_Length+1];
 		Output_Weight = new double[Input_Weight_Length+1];
+		
+		Init();
 	}
 	
 	void Set_Value(double Learning_Rate,double Beta_Rate)
@@ -112,7 +114,7 @@ class LSTM_Cell
 	}
 	
 	/**********************************************
-					신경망 입출력 제어함수
+				신경망 각종 게이트 제어
 	**********************************************/
 	
 	//망각함수
@@ -265,6 +267,58 @@ class LSTM_Cell
 		
 		return X;
 	}
+	
+	/**********************************************
+				신경망 오차 미분
+	**********************************************/
+	
+	//오차
+	double Result_Error(double Target, double Result)
+	{
+		return Target - Result;
+	}
+	
+	//최초 오차계산
+	double Result_Error_Delta(double Error,double Result_Delta)
+	{
+		return Error + Result_Delta;
+	}
+	
+	//상태 오차 함수
+	double State_Error_Delta(double Result_Error_Delta, double Result, double Cell_State, double Next_Cell_State,double Forgot_Value)
+	{
+		//Cell_State SE= RE * 출력값 * {(1 - tanh(상태값)^2) + t+1오차신호} * t+1Forgot_Value;
+		return Result_Error_Delta * Result * (  (1 - Tanh(Cell_State)) + Next_Cell_State ) * Forgot_Value; 
+	}
+	
+	//입력활성화 오차함수
+	double Cell_Delta_Error_Delta(double State_Error_Delta,double Cell_Delta)
+	{
+		//Cell_Delta CDE= CSE * Cell_Delta * (1 - pow(Cell_Delta,2));
+		return State_Error_Delta * Cell_Delta * (1 - pow(Cell_Delta,2));
+	}
+	
+	//입력게이트 오차함수
+	double Input_Gate_Delta(double State_Error_Delta, double Cell_Delta, double Input_Value)
+	{
+		//Input IE = CSE * Input_Value * (1 - Input_Value);
+		return State_Error_Delta * Cell_Delta * Input_Value * (1 - Input_Value);
+	}
+	
+	//망각게이트 오차함수
+	double Forgot_Gate_Delta(double State_Error_Delta,double Was_Cell_State,double Forgot_Value)
+	{
+		//Forgot FE = CSE * t-1Cell_State * Forgot_Value * (1 - Forgot_Valu
+		return State_Error_Delta * Was_Cell_State * Forgot_Value * (1 - Forgot_Value);
+	}
+	
+	//출력게이트 오차함수
+	double Output_Gate_Delta(double Result_Delta_Error, double Cell_State,double Output_Value)
+	{
+		//Output OP = RE * tanh(Cell_State) * Output_Value * (1 - Output_Value);
+		return Result_Delta_Error * Tanh(Cell_State) * Output_Value * (1  - Output_Value);
+	}
+	
 	
 	/**********************************************
 					신경망 학습함수

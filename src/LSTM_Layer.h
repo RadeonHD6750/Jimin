@@ -21,7 +21,6 @@ class LSTM_Layer
 					신경망 학습요소
 	**********************************************/
 	
-	int Active_Function;
 	double Learning_Rate;
 	double Beta_Rate;
 	
@@ -47,9 +46,8 @@ class LSTM_Layer
 	}
 	
 	//신경망 구축하기
-	void Build(int Active_Function,int Layer_Length, int Input_Length,double Learning_Rate, double Beta_Rate)
+	void Build(int Layer_Length, int Input_Length,double Learning_Rate, double Beta_Rate)
 	{
-		this->Active_Function=Active_Function;
 		this->Layer_Length = Layer_Length;
 		this->Input_Length = Input_Length;
 		
@@ -67,9 +65,9 @@ class LSTM_Layer
 		
 	}
 	
-	void Set_Value(int Active_Function,double Learning_Rate,double Beta_Rate)
+	void Set_Value(double Learning_Rate,double Beta_Rate)
 	{
-		this->Active_Function = Active_Function;
+		
 		this->Learning_Rate = Learning_Rate;
 		this->Beta_Rate = Beta_Rate;
 		
