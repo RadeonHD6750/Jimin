@@ -338,6 +338,12 @@ class LSTM_Cell
 	}
 	*/
 	
+	//오류 역전파
+	void BP_Update(double Signal[],double Error_Array[])
+	{
+		
+	}
+	
 	//가중치 갱신하기
 	void Hebb_Update(double Signal[])
 	{
