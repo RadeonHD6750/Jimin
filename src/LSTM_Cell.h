@@ -339,9 +339,22 @@ class LSTM_Cell
 	*/
 	
 	//오류 역전파
-	void BP_Update(double Signal[],double Error_Array[])
+	void BP_Update(double Signal[],double Error)
 	{
+		//각종 게이트
+		double Forgot_Value = Forgot_Function(Signal);
+		double Input_Value = Input_Function(Signal);
+		double Out = Output_Function(Signal);
 		
+		//입력활성값
+		double Cell_Delta = Cell_Delta_Function(Signal);
+		
+		double Cell_State = Cell_State_Function(Signal);
+		
+		double Result = Propagate(Signal);
+		
+		//상태오차
+		//State_Error_Delta(Error, Result, Cell_State, double Next_Cell_State,Forgot_Value);
 	}
 	
 	//가중치 갱신하기
