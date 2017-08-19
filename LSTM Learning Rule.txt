@@ -1,7 +1,7 @@
 오차 E= 목표값 - 출력값;
 
 Result RE= E + 출력변화량;
-Cell_State CSE= CSE * 출력값 * {(1 - tanh(상태값)^2) + t+1오차신호} * t+1Forgot_Value;
+Cell_State CSE= RE * 출력값 * {(1 - tanh(상태값)^2) + t+1오차신호} * t+1Forgot_Value;
 Cell_Delta CDE= CSE * Cell_Delta * (1 - pow(Cell_Delta,2));
 Input IE = CSE * CDE * Input_Value * (1 - Input_Value);
 Forgot FE = CSE * t-1Cell_State * Forgot_Value * (1 - Forgot_Value);
