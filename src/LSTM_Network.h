@@ -55,7 +55,7 @@ class LSTM_Network
 	
 	~LSTM_Network()
 	{
-		
+	
 	}
 	
 	void Build(int Class_Length,int Layer_Length[],double Learning_Rate,double Beta_Rate)

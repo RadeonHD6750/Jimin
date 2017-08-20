@@ -134,8 +134,8 @@ class Jimin_ANN
 	double* Propagate(double Signal[])
 	{
 		
-		//double *Result =  full_connected.Propagate(Signal);
-		double *Result =  lstm_network.Propagate(Signal); //잠시 LSTM 동작테스트하기
+		double *Result =  full_connected.Propagate(Signal);
+		//double *Result =  lstm_network.Propagate(Signal); //잠시 LSTM 동작테스트하기
 		
 		return Result;
 	}
@@ -240,8 +240,8 @@ class Jimin_ANN
 	//부분 오류역전파
 	void Network_Update(double Signal[],double Error_Delta[])
 	{
-		//full_connected.Hebb_BP_Update(Signal,Error_Delta);
-		lstm_network.Hebb_BP_Update(Signal,Error_Delta);
+		full_connected.Hebb_BP_Update(Signal,Error_Delta);
+		//lstm_network.Hebb_BP_Update(Signal,Error_Delta);
 		
 		Epsilon_Loss_Function();
 	}

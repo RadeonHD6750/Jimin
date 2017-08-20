@@ -19,7 +19,6 @@ static double RandomRange(double min,double MAX)
 	double f = (double)rand() / RAND_MAX;
 	
     return min + f * (MAX - min);
-	//return f * 2 -1;
 }
 
 static int RandomRange(int n1, int n2) 

@@ -108,7 +108,7 @@ class Neuron
 			this->Input_Signal[i] = Signal[i];
 		}
 	
-		X = X + (Bias_Weight + 1.0);
+		X = X + (Bias_Weight * 1.0);
 		
 		return X;
 	}

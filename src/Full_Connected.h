@@ -20,7 +20,6 @@
 #include <cmath>
 
 #include "Neuron_Layer.h"
-//#include "LSTM_Network.h"
 
 using namespace std;
 
