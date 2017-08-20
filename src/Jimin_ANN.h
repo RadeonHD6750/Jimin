@@ -229,6 +229,7 @@ class Jimin_ANN
 	**********************************************/
 
 	//Hebb Rule
+	
 	void Hebb_Update(double Signal[])
 	{
 		full_connected.Hebb_Update(Signal);
@@ -237,7 +238,8 @@ class Jimin_ANN
 	//부분 오류역전파
 	void Network_Update(double Signal[],double Error_Delta[])
 	{
-		full_connected.Hebb_BP_Update(Signal,Error_Delta);
+		//full_connected.Hebb_BP_Update(Signal,Error_Delta);
+		lstm_network.Hebb_BP_Update(Signal,Error_Delta);
 		
 		Epsilon_Loss_Function();
 	}

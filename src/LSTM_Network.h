@@ -129,10 +129,23 @@ class LSTM_Network
 	/**********************************************
 					신경망 학습식
 	**********************************************/
+	
+	//기존 오류역전파
+	void BP_Update(double Signal[],double Error_Array[])
+	{
+		//하위 호환을 위하여 만들어둔 함수
+		Hebb_BP_Update(Signal,Error_Array);
+		
+		/*
+			출력층만 오류역전파를 적용하고 나머지 깊은층에 대하여는
+		Hebb 학습규칙을 사용한다. 어차피 깊은층까지 오차가 전파되기
+		힘들다.
+		*/
+	}
 
 	
 	//LSTM Hebb Rule
-	void Hebb_Update(double Signal[],double Error_Array[])
+	void Hebb_BP_Update(double Signal[],double Error_Array[])
 	{
 		
 		Layer[0].Hebb_Update(Signal);
@@ -150,7 +163,7 @@ class LSTM_Network
 			
 		}
 		
-		//Layer[Class_Length-1].BP_Update(Temp,Error_Array); 차후에 오류역전파 코딩하기
+		Layer[Class_Length-1].BP_Update(Temp,Error_Array); //차후에 오류역전파 코딩하기 -> 코딩완료
 
 	}
 	

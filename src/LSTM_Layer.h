@@ -110,31 +110,21 @@ class LSTM_Layer
 					신경망 학습식
 	**********************************************/
 	
-	//LSTM Update
-	/*
-	void LSTM_Update(double Signal[],double Error_Array[])
+	
+	void BP_Update(double Signal[],double Error_Array[])
 	{
 		for(int i=0;i<Layer_Length;i++)
 		{
-			lstm_layer->Cell_Update(Signal,Error_Array[i]);
+			lstm_layer[i].BP_Update(Signal,Error_Array[i]);
 		}
 	}
-	
-	//LSTM Update
-	void LSTM_Update(double Signal[])
-	{
-		for(int i=0;i<Layer_Length;i++)
-		{
-			lstm_layer->Cell_Update(Signal);
-		}
-	}*/
 	
 	//Hebb 학습규칙
 	void Hebb_Update(double Signal[])
 	{
 		for(int i=0;i<Layer_Length;i++)
 		{
-			lstm_layer->Hebb_Update(Signal);
+			lstm_layer[i].Hebb_Update(Signal);
 		}
 	}
 

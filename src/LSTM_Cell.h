@@ -21,6 +21,7 @@ class LSTM_Cell
 	double Learning_Rate;
 	double Beta_Rate;
 	double Cell_State;
+	double Cell_State_Save;
 	
 	double *Forgot_Weight;
 	double *Input_Weight;
@@ -352,7 +353,7 @@ class LSTM_Cell
 	*/
 	
 	//오류 역전파 이제 이것으로 사용하면 됨
-	void BP_Update(double Signal[],double Error,double Next_Cell_State)
+	void BP_Update(double Signal[],double Error)
 	{
 		//각종 게이트
 		double Forgot_Value = Forgot_Function(Signal);
@@ -367,7 +368,7 @@ class LSTM_Cell
 		double Result = Propagate(Signal);
 		
 		//각종 오차신호
-		double State_Error = State_Error_Delta(Error, Result, Cell_State, Next_Cell_State,Forgot_Value);
+		double State_Error = State_Error_Delta(Error, Result, Cell_State, Cell_State_Save,Forgot_Value);
 		double Cell_Delta_Error = Cell_Delta_Error_Delta(State_Error,Cell_Delta);
 		double Forgot_Error = Forgot_Gate_Delta(State_Error,this->Cell_State,Forgot_Value);
 		double Input_Error = Input_Gate_Delta(State_Error, Cell_Delta, Input_Value);
