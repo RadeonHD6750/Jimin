@@ -1,7 +1,14 @@
 /*
 	LSTM Cell 정의
 	
-	기존의 Neuron.h 파일을 받는다.
+	Cell State를 시간별로 저장해야 한다.
+	
+	그리고 다시 되불러야한다.
+	
+	각 게이트별로 편미분 함수 구현
+	오차신호를 이용한 가중치 수정
+	
+	Hebb 학습규칙
 	
 	작성자 서지민
 */
@@ -337,20 +344,6 @@ class LSTM_Cell
 	/**********************************************
 					신경망 학습함수
 	**********************************************/
-	
-	
-	//가중치 갱신하기
-	/*
-	void Cell_Update(double Signal[],double Error_Array)
-	{
-		Forgot_Weight.Hebb_Update(Signal);
-		Input_Weight.Hebb_Update(Signal);
-		Cell_Delta_Weight.Hebb_Update(Signal);
-		Output_Weight.Hebb_Update(Signal);
-		
-		Input_Weight.BP_Update(Error_Array);
-	}
-	*/
 	
 	//오류 역전파 이제 이것으로 사용하면 됨
 	void BP_Update(double Signal[],double Error)

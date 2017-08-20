@@ -1,3 +1,13 @@
+/*
+	여기서는 각종 지원함수가 있다.
+	
+	난수를 뽑는 것부터 반올림 함수까지
+	기술되어 있다.
+	
+	작성자 서지민
+
+*/
+
 #include <iostream>
 #include <ctime>
 #include <cstdlib>

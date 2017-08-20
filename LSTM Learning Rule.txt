@@ -6,3 +6,5 @@ Cell_Delta CDE= CSE * Cell_Delta * (1 - pow(Cell_Delta,2));
 Input IE = CSE * CDE * Input_Value * (1 - Input_Value);
 Forgot FE = CSE * t-1Cell_State * Forgot_Value * (1 - Forgot_Value);
 Output OP = RE * tanh(Cell_State) * Output_Value * (1 - Output_Value);
+
+뭐가 이리 복합하지

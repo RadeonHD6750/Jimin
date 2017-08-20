@@ -1,3 +1,17 @@
+/*
+	라이브러리는 이미 Jimin_ANN.h이나 당장에
+	동작할 API를 만들었음
+	
+	어딜가나 여기서처럼 코딩하면 됨
+	
+	아무튼 라이브러리는 Jimin_ANN.h으로 한다.
+	
+	#include "Jimin_ANN.h"를 하여 사용하면 된다.
+	
+	작성자 서지민
+
+*/
+
 #include <iostream>
 #include <cmath>
 #include <ctime>
