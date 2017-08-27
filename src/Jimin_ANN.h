@@ -21,6 +21,8 @@
 #include "Full_Connected.h"
 #include "LSTM_Network.h"
 
+#include "Util.h"
+
 using namespace std;
 
 class Jimin_ANN

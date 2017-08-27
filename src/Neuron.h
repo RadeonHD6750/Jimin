@@ -13,8 +13,8 @@
 
 #include <iostream>
 #include <cmath>
-
-#include "Util.h"
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -212,6 +212,31 @@ class Neuron
 		
 		Bias_Weight = Bias_Weight +  ( Learning_Rate * Result) * ( Beta_Rate * 1.0 - Bias_Weight)  * Gradient;
 
+	}
+	
+	/**********************************************
+					각종 지원함수
+	**********************************************/
+	
+	double RandomRange(double min,double MAX)
+	{
+		double f = (double)rand() / RAND_MAX;
+
+		return min + f * (MAX - min);
+	}
+
+	int RandomRange(int n1, int n2) 
+	{ 
+	   return (rand() % (n2 - n1 + 1)) + n1; 
+	} 
+
+	double Round( double value, int pos )
+	{
+		  double temp;
+		  temp = value * pow( 10, pos );  // 원하는 소수점 자리수만큼 10의 누승을 함
+		  temp = floor( temp + 0.5 );          // 0.5를 더한후 버림하면 반올림이 됨
+		  temp *= pow( 10, -pos );           // 다시 원래 소수점 자리수로
+		  return temp;
 	}
 
 	
