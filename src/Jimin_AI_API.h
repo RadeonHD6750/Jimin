@@ -154,14 +154,18 @@ class Jimin_AI_API
 		}
 		cout << "\n\n\n";
 		
+		double Start = NowTime();
+		
 		double *Result = Propagate(Test_Vector);
+		
+		double End = NowTime();
 		
 		cout << "신경망 출력패턴 \n";
 		for(int i=0;i<Result_Length;i++)
 		{
 			cout << Round(Result[i],3) << "  ";
 		}
-		cout << "\n\n\n";
+		cout << "\n소요시간: " << (End-Start) << "ms  \n\n\n";
 		
 		delete []Test_Vector;
 		delete []Result;
@@ -242,7 +246,7 @@ class Jimin_AI_API
 	
 		srand(time(NULL));	
 	
-		int Length[7] = {32,16,12,10,8,6,4}; //신경망 구조 정의
+		int Length[7] = {256,32,12,10,8,6,4}; //신경망 구조 정의
 
 		Build(0,6, Length,0.25,0.15); //신경망 구축하기
 

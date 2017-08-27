@@ -12,21 +12,22 @@
 #include <ctime>
 #include <cstdlib>
 
+
 using namespace std;
 
-static double RandomRange(double min,double MAX)
+double RandomRange(double min,double MAX)
 {
 	double float_Value = (double)rand() / RAND_MAX;
 
 	return min + float_Value * (MAX - min);
 }
 
-static int RandomRange(int min, int MAX) 
+int RandomRange(int min, int MAX) 
 { 
 	  return (rand() % (MAX - min + 1)) + min; 
 } 
 
-static double Round( double value, int pos )
+double Round( double value, int pos )
 {
 	double temp;
 		
@@ -36,4 +37,23 @@ static double Round( double value, int pos )
 		
 	return temp;
 }
+
+//Milli Second 반환
+double NowTime()
+{
+	clock_t nowclock = clock();
+	
+	double NowSec = (double)(nowclock / 1000);
+	double NowMilli = (double)(NowSec / 1000);
+	
+	return NowMilli;
+}
+
+double CPU_Clock()
+{
+	clock_t nowclock = clock();
+	
+	return nowclock;
+}
+
 

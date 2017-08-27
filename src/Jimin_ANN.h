@@ -66,6 +66,8 @@ class Jimin_ANN
 	{
 		Init_Epsilon = 0.5;
 		Init_Epsilon_Loss = 0.01;
+		
+		srand(NowTime());
 	}
 	
 	~Jimin_ANN()
@@ -386,6 +388,7 @@ class Jimin_ANN
 		
 		Init();
 		
+		double Start = NowTime();
 		for(i=0;i<Episode;i++)
 		{
 			
@@ -435,13 +438,37 @@ class Jimin_ANN
 			B_Error = Total_Error;
 			
 		}
-		
+		double End = NowTime();
 		
 		Error_Delta = 0;
 		Error = 0;
 		Total_Error = 0;
 		Hit_Rate = 0;
 		
+		cout << "학습데이터 검증 \n\n\n";
+		
+		for(set=0;set<Data_Size;set++)
+		{
+			Result = Propagate(Signal_List[set]);
+			
+			cout << "==================================\n";
+			cout <<"학습패턴 " << set << "\n\n";
+			
+			cout << "목표벡터 :";
+			Show_Array(Target_List[set],Result_Length); cout << endl;
+			
+			cout << "신경망  :";
+			Show_Array(Result,Result_Length); cout << endl;
+			
+			Error_Array = Error_Array_Function(Target_List[set],Signal_List[set]);
+				
+			Error = Cost_Function(Target_List[set],Signal_List[set]);
+			
+			cout << "오차: " << Error << "\n==================================\n\n\n\n\n";
+				
+			Total_Error = Total_Error + Error;
+		}
+		cout << "학습완료 소요시간: " << (End - Start) << "ms\n\n";
 		cout << "Hebb Error Back Propagate Finish \n\n\n";
 		
 		delete []Error_Array;
