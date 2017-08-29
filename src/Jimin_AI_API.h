@@ -154,18 +154,18 @@ class Jimin_AI_API
 		}
 		cout << "\n\n\n";
 		
-		double Start = NowTime();
+		double Start = CPU_Clock_Count();
 		
 		double *Result = Propagate(Test_Vector);
 		
-		double End = NowTime();
+		double End = CPU_Clock_Count();
 		
 		cout << "신경망 출력패턴 \n";
 		for(int i=0;i<Result_Length;i++)
 		{
 			cout << Round(Result[i],3) << "  ";
 		}
-		cout << "\n소요시간: " << (End-Start) << "ms  \n\n\n";
+		cout << "\n소요시간: " << (End-Start) << "Clock  \n\n\n";
 		
 		delete []Test_Vector;
 		delete []Result;
