@@ -49,7 +49,7 @@ double NowTime()
 	return NowMilli;
 }
 
-double CPU_Clock()
+double CPU_Clock_Count()
 {
 	clock_t nowclock = clock();
 	

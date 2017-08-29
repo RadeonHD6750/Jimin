@@ -67,7 +67,7 @@ class Jimin_ANN
 		Init_Epsilon = 0.5;
 		Init_Epsilon_Loss = 0.01;
 		
-		srand(NowTime());
+		srand(CPU_Clock_Count());
 	}
 	
 	~Jimin_ANN()
@@ -339,8 +339,6 @@ class Jimin_ANN
 		for(set=0;set<Data_Size;set++)
 		{
 			cout << "학습패턴  " << set << "\n\n";
-			cout << "Signal \n";
-			Show_Array(Signal_List[set],Input_Length);
 			
 			Result = Propagate(Signal_List[set]);
 			

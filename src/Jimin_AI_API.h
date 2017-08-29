@@ -183,12 +183,14 @@ class Jimin_AI_API
 		
 		for(int set=0;set<Data_Size;set++)
 		{
+			
 			Data[set].Build(Input_Length,Result_Length);
 			
 			
 			Signal_List.push_back(Data[set].GetSignal());
 			Target_List.push_back(Data[set].GetTarget());
 		}
+		
 		
 		Network.Supervised_Learning(Data_Size,Signal_List,Target_List,200,0.01,2);
 		
