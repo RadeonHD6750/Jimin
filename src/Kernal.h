@@ -18,6 +18,7 @@ class Kernal
 	private:
 	
 	int Width,Height;
+	int Window_Size;
 	
 	Dynamic_Matrix Filter;
 	
@@ -37,12 +38,13 @@ class Kernal
 		
 	}
 	
-	void Build(int Width,int Height)
+	void Build(int Width,int Height,int Window_Size)
 	{
 		this->Width = Width;
 		this->Height = Height;
+		this->Window_Size = Window_Size;
 		
-		Filter.Build(Width,Height);
+		Filter.Build(Window_Size);
 		Init();
 	}
 	
@@ -60,14 +62,81 @@ class Kernal
 	/*************************************************
 					Convolute
 	************************************************/
-	double Convolute_Function(double Raw_Data[][], int i, int j)
+	double Convolute_Function(double Raw_Data[][], int r, int c)
 	{
+		double X = 0;
+		for(int i=0;i<Window_Size;i++)
+		{
+			for(int j=0;j<Window_Size;j++)
+			{
+				X = X + (Raw_Data[r + i][c + j] * Filter[i][j]);
+			}
+		}
 		
+		return X;
+	}
+	
+	double** Feature_Map_Function(double Raw_Data[][])
+	{
+		/*
+		 원본손실을 방지하기 위한 채우기 연산
+		*/
+		Dynamic_Matrix Padding_Data;
+		
+		int Padding_w = Width + Window_Size - 1;
+		int Padding_h = Height + Window_Size - 1;
+		
+		int Delta_w = Padding_w - Width;
+		int Delta_h = Padding_h - Height;
+		
+		Padding_Data.Build(Padding_w, Padding_h);
+		
+		
+		for(int i=0;i<Height;i++)
+		{
+			for(int j=0;j<Width;j++)
+			{
+				Padding_Data.Set_Value(i + Delta_h, j + Delta_w, Raw_Data[i][j]);
+			}
+		}
+		
+		///////////////////////////////////////////////////////
+		
+		
+		//특징지도 만들기
+		Dynamic_Matrix Feature_Map;
+		
+		Padding_Data.Build(Width, Height);
+		
+		//이제 만들어진 채우기 데이터로 진짜로 합성곱 연산하기
+		
+		int X = 0;
+		
+		for(int i=Delta_h;i<Height;i++)
+		{
+			for(int j=Delta_w;j<Width;j++)
+			{
+				X = Convolute_Function(Raw_Data, i, j)
+				Padding_Data.Set_Value(i, j, X);
+			}
+		}
+		
+		return Feature_Map.Get_Matrix();
 	}
 	
 	/*************************************************
 					Pooling
 	************************************************/
+	
+	double Pooling_Function(double Raw_Data[][], int r, int c)
+	{
+		
+	}
+	
+	double** Sampling_Function(double Raw_Data[][], int i, int j)
+	{
+		
+	}
 	
 	/*************************************************
 					각종 지원함수들
@@ -107,6 +176,7 @@ class Dynamic_Matrix
 	public:
 	
 	int Width,Height;
+	int Window_Size;
 	
 	double **Mat;
 	
@@ -124,10 +194,32 @@ class Dynamic_Matrix
 		delete []Mat;
 	}
 	
+	void Build(Window_Size)
+	{
+		this->Width = Window_Size;
+		this->Height = Window_Size;
+		this->Window_Size = Window_Size;
+		
+		Mat = new double *[Window_Size];
+		
+		for(int i=0;i<Window_Size;i++)
+		{
+			Mat[i] = new double[Window_Size];
+		}
+		
+		for(int i=0;i<Window_Size;i++)
+		{
+			for(int j=0;j<Window_Size;j++)
+			{
+				Mat[i][j] = 0;
+			}
+		}
+	}
+	
 	void Build(int Width,int Height)
 	{
-		this->Width = Width;
-		this->Height = Height;
+		this->Width = Window_Size;
+		this->Height = Window_Size;
 		
 		Mat = new double *[Height];
 		
@@ -153,5 +245,10 @@ class Dynamic_Matrix
 	double Get_Value(int i,int j)
 	{
 		return Mat[i][j];
+	}
+	
+	double** Get_Matrix()
+	{
+		return Mat;
 	}
 };
