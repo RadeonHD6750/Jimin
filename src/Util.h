@@ -44,7 +44,7 @@ double NowTime()
 	clock_t nowclock = clock();
 	
 	double NowSec = (double)(nowclock / 1000);
-	double NowMilli = (double)(NowSec / 1000);
+	double NowMilli = (NowSec / 1000);
 	
 	return NowMilli;
 }
