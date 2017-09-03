@@ -10,6 +10,9 @@
 #include <ctime>
 #include <cstdlib>
 #include <cmath>
+#include <vector>
+
+#include "Dynamic Matrix.h"
 
 using namespace std;
 
@@ -20,10 +23,19 @@ class Kernal
 	int Width,Height;
 	int Window_Size;
 	
+		
+	int Padding_w; 
+	int Padding_h; 
+		
+	int Delta_w; 
+	int Delta_h;
+	
 	Dynamic_Matrix Filter;
 	
 	public:
 	
+	int Result_Width;
+	int Result_Height;
 	/*************************************************
 					Kenal 생성하기
 	************************************************/
@@ -44,7 +56,16 @@ class Kernal
 		this->Height = Height;
 		this->Window_Size = Window_Size;
 		
-		Filter.Build(Window_Size);
+		Result_Width = (Width - Window_Size) + 1;
+		Result_Height = (Height - Window_Size) + 1;
+		
+		Padding_w = Width + Window_Size - 1;
+		Padding_h = Height + Window_Size - 1;
+		
+		Delta_w = Padding_w - Width;
+		Delta_h = Padding_h - Height;
+		
+		this->Filter.Build(Window_Size);
 		Init();
 	}
 	
@@ -62,22 +83,30 @@ class Kernal
 	/*************************************************
 					Convolute
 	************************************************/
-	double Convolute_Function(double Raw_Data[][], int r, int c)
+	
+	//다차원 배열 함수인자
+	double Convolute_Function(Dynamic_Matrix Raw_Data, int r, int c)
 	{
+		
 		double X = 0;
+		double Temp = 0;
+		
 		for(int i=0;i<Window_Size;i++)
 		{
 			for(int j=0;j<Window_Size;j++)
 			{
-				X = X + (Raw_Data[r + i][c + j] * Filter[i][j]);
+				Temp = Raw_Data.Get_Value(r + i,c + j);
+				X = X + (Temp * Filter.Get_Value(i,j));
 			}
 		}
 		
 		return X;
 	}
 	
-	double** Feature_Map_Function(double Raw_Data[][])
+	Dynamic_Matrix Feature_Map_Function(Dynamic_Matrix Raw_Data)
 	{
+		
+		
 		/*
 		 원본손실을 방지하기 위한 채우기 연산
 		*/
@@ -96,7 +125,7 @@ class Kernal
 		{
 			for(int j=0;j<Width;j++)
 			{
-				Padding_Data.Set_Value(i + Delta_h, j + Delta_w, Raw_Data[i][j]);
+				Padding_Data.Set_Value(i + Delta_h, j + Delta_w, Raw_Data.Get_Value(i,j));
 			}
 		}
 		
@@ -116,26 +145,81 @@ class Kernal
 		{
 			for(int j=Delta_w;j<Width;j++)
 			{
-				X = Convolute_Function(Raw_Data, i, j)
+				X = Convolute_Function(Raw_Data, i, j);
 				Padding_Data.Set_Value(i, j, X);
 			}
 		}
 		
-		return Feature_Map.Get_Matrix();
+		return Feature_Map;
 	}
 	
 	/*************************************************
 					Pooling
 	************************************************/
 	
-	double Pooling_Function(double Raw_Data[][], int r, int c)
+	//여기는 굳이 원본을 지킬 필요가 없다. 당초 원본을 줄일려고 하는 것이니까 말이다.
+	
+	//MAX Pooling
+	double Pooling_Function(Dynamic_Matrix Raw_Data, int r, int c)
 	{
+		vector<double> Data_List;
 		
+		for(int i=0;i<Window_Size;i++)
+		{
+			for(int j=0;j<Window_Size;j++)
+			{
+				Data_List.push_back(Raw_Data.Get_Value(r + i,c + j));
+			}
+		}
+		
+		double MAX = abs(Data_List[0]);
+		int Next =0;
+		
+		for(int i=0;i<Data_List.size();i++)
+		{
+			Next = abs(Data_List[i]);
+			
+			if( MAX < Next)
+			{
+				MAX = Next;
+			}
+		}
+		
+		return MAX;
 	}
 	
-	double** Sampling_Function(double Raw_Data[][], int i, int j)
+	Dynamic_Matrix Sampling_Function(Dynamic_Matrix Raw_Data)
 	{
+		Dynamic_Matrix Sampled_Data;
 		
+		Sampled_Data.Build(Result_Width,Result_Height);
+		
+		int X = 0;
+		
+		for(int i=0;i<Result_Height;i++)
+		{
+			for(int j=0; j<Result_Width; j++)
+			{
+				X = Pooling_Function(Raw_Data, i, j);
+				
+				Sampled_Data.Set_Value(i,j,X);
+			}
+		}
+		
+		return Sampled_Data;
+	}
+	
+	
+	/*************************************************
+					최종 전파함수
+	************************************************/
+	Dynamic_Matrix Propagate(Dynamic_Matrix Raw_Data)
+	{
+		Dynamic_Matrix Feature_Map = Feature_Map_Function(Raw_Data);
+		
+		Dynamic_Matrix Sampled_Data = Sampling_Function(Feature_Map);
+		
+		return Sampled_Data;
 	}
 	
 	/*************************************************
@@ -151,7 +235,7 @@ class Kernal
 
 	int RandomRange(int min, int MAX) 
 	{ 
-		  return (rand() % (MAX - min + 1)) + min; 
+			 return (rand() % (MAX - min + 1)) + min; 
 	} 
 
 	double Round( double value, int pos )
@@ -166,89 +250,6 @@ class Kernal
 	}
 };
 
-/*
-	동적 2차원 배열
-	
-	작성자 서지민
-*/
-class Dynamic_Matrix
-{
-	public:
-	
-	int Width,Height;
-	int Window_Size;
-	
-	double **Mat;
-	
-	Dynamic_Matrix()
-	{
-		
-	}
-	
-	~Dynamic_Matrix()
-	{
-		for(int i=0;i<Height;i++)
-		{
-			delete [] Mat[i];
-		}
-		delete []Mat;
-	}
-	
-	void Build(Window_Size)
-	{
-		this->Width = Window_Size;
-		this->Height = Window_Size;
-		this->Window_Size = Window_Size;
-		
-		Mat = new double *[Window_Size];
-		
-		for(int i=0;i<Window_Size;i++)
-		{
-			Mat[i] = new double[Window_Size];
-		}
-		
-		for(int i=0;i<Window_Size;i++)
-		{
-			for(int j=0;j<Window_Size;j++)
-			{
-				Mat[i][j] = 0;
-			}
-		}
-	}
-	
-	void Build(int Width,int Height)
-	{
-		this->Width = Window_Size;
-		this->Height = Window_Size;
-		
-		Mat = new double *[Height];
-		
-		for(int i=0;i<Height;i++)
-		{
-			Mat[i] = new double[Width];
-		}
-		
-		for(int i=0;i<Height;i++)
-		{
-			for(int j=0;j<Width;j++)
-			{
-				Mat[i][j] = 0;
-			}
-		}
-	}
-	
-	void Set_Value(int i,int j, double Data)
-	{
-		Mat[i][j] = Data;
-	}
-	
-	double Get_Value(int i,int j)
-	{
-		return Mat[i][j];
-	}
-	
-	double** Get_Matrix()
-	{
-		return Mat;
-	}
-};
+
+
+
