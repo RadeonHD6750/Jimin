@@ -30,6 +30,9 @@ class Kernal
 	int Delta_w; 
 	int Delta_h;
 	
+	double Alpha,Beta;
+	double Bias_Weight;
+	
 	Dynamic_Matrix Filter;
 	
 	public:
@@ -42,7 +45,9 @@ class Kernal
 	
 	Kernal()
 	{
-		
+		Alpha = 0.25;
+		Beta = 0.15;
+		Bias_Weight = RandomRange(-1.0, 1.0);
 	}
 	
 	~Kernal()
@@ -80,6 +85,11 @@ class Kernal
 		}
 	}
 	
+	void Set_Filter(int i, int j, double Data)
+	{
+		Filter.Set_Value(i,j, Data  ); 
+	}
+	
 	/*************************************************
 					Convolute
 	************************************************/
@@ -99,6 +109,8 @@ class Kernal
 				X = X + (Temp * Filter.Get_Value(i,j));
 			}
 		}
+		
+		X = X + ( 1.0 * Bias_Weight);
 		
 		return X;
 	}
@@ -221,6 +233,39 @@ class Kernal
 		
 		return Sampled_Data;
 	}
+	
+	/*************************************************
+					여과기 학습함수
+	************************************************/
+	
+	//일단 Hebb 학습규칙을 사용해 본다.
+	void Hebb_Update(Dynamic_Matrix Signal)
+	{
+		double Gradient =0;
+		double Result = 0;
+		double Delta =0;
+
+		for(int i=0;i<Window_Size;i++)
+		{
+	
+			
+			for(int j=0;j<Window_Size;j++)
+			{
+				Delta = Filter.Get_Value(i,j);
+				Result = Convolute_Function(Signal,i,j);
+				Gradient = (1 - pow(Result,2)) * 0.5;
+				
+				Delta = Delta + (Alpha * Result) * (Beta *  (Signal.Get_Value(i,j) - Filter.Get_Value(i,j)) ) *Gradient;
+				Filter.Set_Value(i,j, Delta);
+			}
+			
+		}
+
+		Bias_Weight = Bias_Weight +  (Alpha * Result) * (Beta *  (1 - Bias_Weight) ) *Gradient;
+		
+	}
+	
+	
 	
 	/*************************************************
 					각종 지원함수들

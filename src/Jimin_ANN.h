@@ -48,6 +48,8 @@ class Jimin_ANN
 	
 	public:
 	
+	Convolutional_NN convolutional_nn; //CNN 신경망
+	
 	Full_Connected full_connected; //완전연결 신경망
 	
 	LSTM_Network lstm_network; //순환신경망
@@ -106,7 +108,6 @@ class Jimin_ANN
 	void Build(int Width,int Height,int Class_Length,int Result_Length)
 	{
 		cout << "합성곱 신경망 구축 시작 \n\n";
-		
 	
 		cout << "합성곱 신경망 구축 완료 \n\n";
 	}

@@ -211,10 +211,10 @@ class Neuron
 		
 		for(int i=0;i<Input_Length;i++)
 		{
-			Weight[i] = Weight[i] + ( Learning_Rate * Result) * ( Beta_Rate * Signal[i] - Weight[i])  * Gradient;
+			Weight[i] = Weight[i] + ( Learning_Rate * Result) * ( Beta_Rate * (Signal[i] - Weight[i]))  * Gradient;
 		}
 		
-		Bias_Weight = Bias_Weight +  ( Learning_Rate * Result) * ( Beta_Rate * 1.0 - Bias_Weight)  * Gradient;
+		Bias_Weight = Bias_Weight +  ( Learning_Rate * Result) * ( Beta_Rate * (1.0 - Bias_Weight))  * Gradient;
 
 	}
 	
