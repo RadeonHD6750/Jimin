@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <vector>
 
 #include "Kernal.h"
 
@@ -18,11 +19,13 @@ class Kernal_Pipeling
 	int Width,Height;
 	int Window_Size;
 	int Class_Size;
-	int Result_Length;
 	
 	Kernal *kernal;
 	
 	public:
+	
+	int Result_Length;
+	int Result_w,Result_h;
 	
 	/*****************************************************
 					Kernal 파이프라이닝 생성하기
@@ -58,6 +61,11 @@ class Kernal_Pipeling
 			Result_w = kernal[i].Result_Width;
 			Result_h = kernal[i].Result_Height;
 		}
+		
+		this->Result_w = Result_w;
+		this->Result_h = Result_h;
+		
+		Result_Length = Result_w * Result_h;
 	}
 	
 	void Init()
@@ -72,7 +80,7 @@ class Kernal_Pipeling
 					Kernal 파이프라이닝 동작
 	****************************************************/
 	
-	Dynamic_Matrix Propagate(Dynamic_Matrix Signal)
+	double* Propagate(Dynamic_Matrix Signal)
 	{
 		
 		Dynamic_Matrix Temp = Signal;
@@ -87,7 +95,39 @@ class Kernal_Pipeling
 			Temp = Temp2;
 		}
 		
-		return Temp2;
+		double *Result = new double[Result_Length];
+		
+		int Count =0;
+		for(int i=0;i<Result_h;i++)
+		{
+			for(int j=0;j<Result_w;j++)
+			{
+				Result[Count] = Temp.Get_Value(i,j);
+				Count++;
+			}
+		}
+		
+		return Result;
+	}
+	
+	// 1*1 필터 출력
+	double Single_Propagate(Dynamic_Matrix Signal)
+	{
+		Dynamic_Matrix Temp = Signal;
+	
+		Dynamic_Matrix Temp2;
+			
+		for(int i = 0; i<Class_Size;i++)
+		{
+			
+			Temp2 = kernal[i].Propagate(Temp);
+			
+			Temp = Temp2;
+		}
+		
+		double X = kernal[Class_Size-1].Single_Propagate(Temp);
+		
+		return X;
 	}
 	
 	/*****************************************************
@@ -103,7 +143,7 @@ class Kernal_Pipeling
 		
 		for(int i = 0; i<Class_Size;i++)
 		{
-			Kernal[i].Hebb_Update(Temp);
+			kernal[i].Hebb_Update(Temp);
 			
 			Temp2 = kernal[i].Propagate(Temp);
 			

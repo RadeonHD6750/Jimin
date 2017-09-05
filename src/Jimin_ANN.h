@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "Convolutional NN.h"
-#include "Full_Connected.h"
+//#include "Full_Connected.h"
 #include "LSTM_Network.h"
 
 #include "Util.h"

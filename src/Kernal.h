@@ -234,6 +234,39 @@ class Kernal
 		return Sampled_Data;
 	}
 	
+	//단일값 출력 1*1 필터
+	double Single_Propagate(Dynamic_Matrix Raw_Data)
+	{
+		Dynamic_Matrix Feature_Map = Feature_Map_Function(Raw_Data);
+		
+		Dynamic_Matrix Sampled_Data = Sampling_Function(Feature_Map);
+		
+		vector<double> Data_List;
+		
+		for(int i=0;i<Result_Height;i++)
+		{
+			for(int j=0;j<Result_Width;j++)
+			{
+				Data_List.push_back(Sampled_Data.Get_Value(i,j));
+			}
+		}
+		
+		double MAX = abs(Data_List[0]);
+		int Next =0;
+		
+		for(int i=0;i<Data_List.size();i++)
+		{
+			Next = abs(Data_List[i]);
+			
+			if( MAX < Next)
+			{
+				MAX = Next;
+			}
+		}
+		
+		return MAX;
+	}
+	
 	/*************************************************
 					여과기 학습함수
 	************************************************/
