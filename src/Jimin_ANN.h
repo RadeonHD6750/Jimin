@@ -105,10 +105,10 @@ class Jimin_ANN
 	}
 	
 	//Convolute
-	void Build(int Width,int Height,int Class_Length,int Result_Length)
+	void Build(int Width,int Height,int Window_Size,int Class_Size,int Kernal_Size,int Result_Length)
 	{
 		cout << "합성곱 신경망 구축 시작 \n\n";
-	
+		convolutional_nn.Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
 		cout << "합성곱 신경망 구축 완료 \n\n";
 	}
 	

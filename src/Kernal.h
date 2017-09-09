@@ -70,15 +70,17 @@ class Kernal
 		Delta_w = Padding_w - Width;
 		Delta_h = Padding_h - Height;
 		
+		//cout << "Kernal Filter 제작 \n";
 		this->Filter.Build(Window_Size);
-		Init();
+		
+		Init(); //이 함수에서 세크멘테이션 오류 발생 해결
 	}
 	
 	void Init()
 	{
-		for(int i=0;i<Height;i++)
+		for(int i=0;i<Window_Size;i++)
 		{
-			for(int j=0;j<Width;j++)
+			for(int j=0;j<Window_Size;j++)
 			{
 				Filter.Set_Value(i,j,  RandomRange(-1.0,1.0)  ); 
 			}

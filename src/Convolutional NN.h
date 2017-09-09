@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #include "Kernal Pipeling.h"
 
@@ -30,6 +31,8 @@ class Convolutional_NN
 	
 	int CNN_Result_Length;
 	int Kernal_Result_Length;
+	
+	vector<thread> Propagate_Thread_List;
 	
 	public:
 	
@@ -63,8 +66,12 @@ class Convolutional_NN
 		
 		kp = new Kernal_Pipeling[Kernal_Size];
 		
+		//thread *Propagate_Thread_List = new thread[Kernal_Size];
+		
+		cout << "Kernal_Pipeling 구축시작 \n";
 		for(int i=0;i<Kernal_Size;i++)
 		{
+			cout << "Kernal: " << i << endl;
 			kp[i].Build(Width,Height,Window_Size,Class_Size);
 		}
 		
@@ -104,6 +111,8 @@ class Convolutional_NN
 		
 		kp = new Kernal_Pipeling[Kernal_Size];
 		
+		//thread *Propagate_Thread_List = new thread[Kernal_Size];
+		
 		for(int i=0;i<Kernal_Size;i++)
 		{
 			kp[i].Build(Width,Height,Window_Size,Class_Size);
@@ -132,12 +141,16 @@ class Convolutional_NN
 		
 		vector<double*> Kernal_Result_List;
 		
+		
 		for(int i=0;i<Kernal_Size;i++)
 		{
 			Kernal_Result_List.push_back(kp[i].Propagate(Signal));
+			
 		}
 		
-		double *Result = new double[CNN_Result_Length];
+		
+		
+		double *Result = new double[Result_Length];
 		
 		int Count =0;
 		

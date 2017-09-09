@@ -3,8 +3,15 @@
 	
 	작성자 서지민
 */
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 class Dynamic_Matrix
 {
+	
 	public:
 	
 	int Width,Height;
@@ -34,18 +41,25 @@ class Dynamic_Matrix
 		
 		Mat = new double *[Window_Size];
 		
+		
+		//cout << "2차원 동적배열 제작 \n";
 		for(int i=0;i<Window_Size;i++)
 		{
 			Mat[i] = new double[Window_Size];
+			
 		}
 		
+		//cout << "2차원 동적배열 2중 포인터 \n";
 		for(int i=0;i<Window_Size;i++)
 		{
 			for(int j=0;j<Window_Size;j++)
 			{
 				Mat[i][j] = 0;
+				//cout << i << " , " << j << " : " << Mat[i][j] << "   ||   ";
 			}
+			//cout << endl;
 		}
+		//cout << endl;
 	}
 	
 	void Build(int Width,int Height)
@@ -83,4 +97,5 @@ class Dynamic_Matrix
 	{
 		return Mat;
 	}
+	
 };

@@ -72,10 +72,9 @@ class Jimin_AI_API
 	}
 	
 	//Convolute
-	void Build(int Width,int Height,int Class_Length,int Result_Length,double Learning_Rate, double Beta_Rate)
+	void Build(int Width,int Height,int Window_Size,int Class_Size,int Kernal_Size,int Result_Length)
 	{
-		this->Learning_Rate = Learning_Rate;
-		this->Beta_Rate = Beta_Rate;
+		Network.Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
 	}
 	
 	void Init()
@@ -250,8 +249,16 @@ class Jimin_AI_API
 	
 		int Length[7] = {256,32,12,10,8,6,4}; //신경망 구조 정의
 
-		Build(0,6, Length,0.25,0.15); //신경망 구축하기
-
+		//Build(0,6, Length,0.25,0.15); //신경망 구축하기
+		int Width = 19;
+		int Height = 19;
+		int Window_Size = 4;
+		int Class_Size = 7;
+		int Kernal_Size = 4;
+		int Result_Length = 6;
+		
+		Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
+		/*
 		int Data_Size = 0;
 		int Learning_Case = 1;
 
@@ -277,6 +284,7 @@ class Jimin_AI_API
 			default:
 				break;
 		}
+		*/
 
 	}
 	
