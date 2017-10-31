@@ -48,11 +48,11 @@ class Jimin_ANN
 	
 	public:
 	
-	Convolutional_NN convolutional_nn; //CNN 신경망
+	//Convolutional_NN convolutional_nn; //CNN 신경망
 	
 	Full_Connected full_connected; //완전연결 신경망
 	
-	LSTM_Network lstm_network; //순환신경망
+	//LSTM_Network lstm_network; //순환신경망
 	
 	/**********************************************
 					신경망 구조
@@ -98,17 +98,18 @@ class Jimin_ANN
 		cout << "완전연결 신경망 구축 시작 \n\n";
 		full_connected.Build(Active_Function,Class_Length,Layer_Length,Learning_Rate,Beta_Rate);
 		cout << "완전연결 신경망 구축 완료 \n\n";
-		
+		/*
 		cout << "LSTM 신경망 구축 시작 \n\n";
 		lstm_network.Build(Class_Length,Layer_Length,Learning_Rate,Beta_Rate);
 		cout << "LSTM 신경망 구축 시작 \n\n";
+		*/
 	}
 	
-	//Convolute
+	//Convolut
 	void Build(int Width,int Height,int Window_Size,int Class_Size,int Kernal_Size,int Result_Length)
 	{
 		cout << "합성곱 신경망 구축 시작 \n\n";
-		convolutional_nn.Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
+		//convolutional_nn.Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
 		cout << "합성곱 신경망 구축 완료 \n\n";
 	}
 	
@@ -121,7 +122,7 @@ class Jimin_ANN
 		this->Epsilon_Loss = Epsilon_Loss;
 		
 		full_connected.Set_Value(Active_Function,Learning_Rate,Beta_Rate);
-		lstm_network.Set_Value(Learning_Rate,Beta_Rate);
+		//lstm_network.Set_Value(Learning_Rate,Beta_Rate);
 	}
 	
 	void Init()
@@ -129,7 +130,7 @@ class Jimin_ANN
 		Epsilon = Init_Epsilon;
 		Epsilon_Loss = Init_Epsilon_Loss;
 		full_connected.Init();
-		lstm_network.Init();
+		//lstm_network.Init();
 	}
 	
 	

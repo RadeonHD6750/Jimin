@@ -249,16 +249,8 @@ class Jimin_AI_API
 	
 		int Length[7] = {256,32,12,10,8,6,4}; //신경망 구조 정의
 
-		//Build(0,6, Length,0.25,0.15); //신경망 구축하기
-		int Width = 19;
-		int Height = 19;
-		int Window_Size = 4;
-		int Class_Size = 7;
-		int Kernal_Size = 4;
-		int Result_Length = 6;
-		
-		Build(Width,Height,Window_Size,Class_Size,Kernal_Size,Result_Length);
-		/*
+		Build(0,6, Length,0.25,0.15); //신경망 구축하기
+	
 		int Data_Size = 0;
 		int Learning_Case = 1;
 
@@ -284,7 +276,7 @@ class Jimin_AI_API
 			default:
 				break;
 		}
-		*/
+		
 
 	}
 	
@@ -312,6 +304,7 @@ class Jimin_AI_API
 		
 		void Delete()
 		{
+			
 			delete []Signal;
 			delete []Target;
 		}

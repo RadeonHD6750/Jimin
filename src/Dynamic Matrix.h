@@ -26,11 +26,13 @@ class Dynamic_Matrix
 	
 	~Dynamic_Matrix()
 	{
+		
 		for(int i=0;i<Height;i++)
 		{
 			delete [] Mat[i];
 		}
 		delete []Mat;
+		
 	}
 	
 	void Build(int Window_Size)
